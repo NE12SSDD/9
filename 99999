@@ -1,0 +1,74 @@
+#include <iostream>
+#include <string>
+
+std::string encryptString(const std::string& input) {
+    std::string result = input;
+
+    for (char& c : result) {
+        if (std::isalpha(c)) { // Перевіряємо, чи символ є буквою
+            char base = std::islower(c) ? 'a' : 'A'; // Визначаємо базовий символ для регістра
+            c = (c == 'e') ? 'ж' : ((c - base + 1) % 26) + base; // Виконуємо циклічну заміну
+        }
+    }
+
+    return result;
+}
+bool satisfiesConditions(const std::string& input) {
+    for (char c : input) {
+        if (std::isalpha(c) && c != 'e') { // Якщо символ - буква, і він не є 'e'
+            char base = std::islower(c) ? 'a' : 'A'; // Визначаємо базовий символ для регістра
+            char next = (c - base + 1) % 26 + base; // Визначаємо наступну за символом літеру в алфавіті
+            if (next != 'ж') // Якщо наступний символ не 'ж' (для 'е'), то умова не виконується
+                return false;
+        }
+    }
+    return true; // Якщо перевірка завершилась успішно для кожного символу, то рядок задовольняє умовам
+}
+#include <fstream>
+
+void createInputFile() {
+    std::ofstream file("input.txt");
+    if (file.is_open()) {
+        file << "This is a sample text.\n";
+        file << "The quick brown fox jumps over the lazy dog.\n";
+        file << "abcdefghijklmnopqrstuvwxyz\n";
+        file << "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n";
+        file << "1234567890\n";
+        file << "!@#$%^&*()\n";
+        file << "Special characters: éüñøäëßÿœç\n";
+        file << "Empty line below\n";
+        file << "\n";
+        file << "End of file.";
+        file.close();
+    } else {
+        std::cerr << "Unable to open file for writing." << std::endl;
+    }
+}
+int main() {
+    createInputFile(); // Створюємо вхідний файл з прикладами рядків
+
+    std::ifstream inputFile("input.txt");
+    if (!inputFile.is_open()) {
+        std::cerr << "Unable to open input file." << std::endl;
+        return 1;
+    }
+
+    std::ofstream outputFile("output.txt");
+    if (!outputFile.is_open()) {
+        std::cerr << "Unable to open output file." << std::endl;
+        return 1;
+    }
+
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        if (satisfiesConditions(line)) {
+            std::string encrypted = encryptString(line);
+            outputFile << encrypted << std::endl;
+        }
+    }
+
+    inputFile.close();
+    outputFile.close();
+
+    return 0;
+}
