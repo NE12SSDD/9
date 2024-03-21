@@ -1,0 +1,42 @@
+#include <iostream>
+
+size_t find_last_of(const char* str, const char* chars) {
+    size_t last_pos = std::string::npos; // Початкове значення останньої позиції - спеціальне значення npos
+
+    // Пройти по рядку символів
+    for (int i = 0; str[i] != '\0'; ++i) {
+        // Пройти по рядку символів, для яких шукаємо останнє входження
+        for (int j = 0; chars[j] != '\0'; ++j) {
+            // Якщо символ в рядку рівний поточному символу з рядка, для якого шукаємо останнє входження
+            if (str[i] == chars[j]) {
+                // Зберегти позицію
+                last_pos = i;
+            }
+        }
+    }
+
+    // Повернути останню позицію
+    return last_pos;
+}
+
+int main() {
+    // Ввести рядок символів
+    char str[100];
+    std::cout << "Введіть рядок символів: ";
+    std::cin.getline(str, 100);
+
+    // Ввести символ для пошуку
+    char search_char;
+    std::cout << "Введіть символ для пошуку: ";
+    std::cin >> search_char;
+
+    // Викликати функцію і метод string аналогічно
+    size_t pos_custom = find_last_of(str, &search_char);
+    size_t pos_std = std::string(str).find_last_of(search_char);
+
+    // Вивести результати
+    std::cout << "Останнє входження символу у введеному рядку (власний метод): " << pos_custom << std::endl;
+    std::cout << "Останнє входження символу у введеному рядку (метод string): " << pos_std << std::endl;
+
+    return 0;
+}
